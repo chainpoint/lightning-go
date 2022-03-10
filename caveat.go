@@ -1,4 +1,4 @@
-package lightning
+package lightning_go
 
 import (
 	"errors"
