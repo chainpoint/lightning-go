@@ -554,29 +554,31 @@ func (ln *LightningClient) SubscribeInvoicesCallback(quit chan struct{},  callba
 }
 
 // SubscribeInvoicesChannel : send new invoices to a channel
-func (ln *LightningClient) SubscribeInvoicesChannel(quit chan struct{}, results chan lnrpc.Invoice) (error) {
+func (ln *LightningClient) SubscribeInvoicesChannel(quit chan struct{}, errc chan error, results chan lnrpc.Invoice) {
 	lightning, closeFunc, err := ln.GetClient()
 	defer closeFunc()
 	if err != nil {
-		return err
+		errc <- err
+		return
 	}
 	subscription, err := lightning.SubscribeInvoices(context.Background(), &lnrpc.InvoiceSubscription{})
 	if err != nil {
-		return err
+		errc <- err
+		return
 	}
 	for {
 		invoice, err := subscription.Recv()
 		if err != nil {
-			return err
+			errc <- err
+			return
 		}
 		select {
 		case <- quit:
-			return nil
+			return
 		default:
 		}
 		results <- *invoice
 	}
-	return nil
 }
 
 // Convert the last known lnd witness fee to non-witness fee type
