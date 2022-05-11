@@ -6,7 +6,7 @@ require (
 	github.com/btcsuite/btcd v0.22.0-beta.0.20211005184431-e3449998be39
 	github.com/btcsuite/btcutil v1.0.3-0.20210527170813-e2ba6805a890
 	github.com/lightningnetwork/lnd v0.9.2-beta
-	google.golang.org/grpc v1.45.0
+	google.golang.org/grpc v1.38.0
 	gopkg.in/macaroon.v2 v2.1.0
 )
 

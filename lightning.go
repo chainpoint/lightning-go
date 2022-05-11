@@ -1,4 +1,4 @@
-package lightning
+package lightning_go
 
 import (
 	"bytes"
@@ -525,6 +525,60 @@ func (ln *LightningClient) CreateConn() (*grpc.ClientConn, error) {
 		return nil, err
 	}
 	return conn, nil
+}
+
+// SubscribeInvoicesCallBack : call a callback with a new invoice as a parameter
+func (ln *LightningClient) SubscribeInvoicesCallback(quit chan struct{},  callback func(inv lnrpc.Invoice)) (error) {
+	lightning, closeFunc, err := ln.GetClient()
+	defer closeFunc()
+	if err != nil {
+		return err
+	}
+	subscription, err := lightning.SubscribeInvoices(context.Background(), &lnrpc.InvoiceSubscription{})
+	if err != nil {
+		return err
+	}
+	for {
+		invoice, err := subscription.Recv()
+		if err != nil {
+			return err
+		}
+		select {
+		case <- quit:
+			return nil
+		default:
+		}
+		callback(*invoice)
+	}
+	return nil
+}
+
+// SubscribeInvoicesChannel : send new invoices to a channel
+func (ln *LightningClient) SubscribeInvoicesChannel(quit chan struct{}, errc chan error, results chan lnrpc.Invoice) {
+	lightning, closeFunc, err := ln.GetClient()
+	defer closeFunc()
+	if err != nil {
+		errc <- err
+		return
+	}
+	subscription, err := lightning.SubscribeInvoices(context.Background(), &lnrpc.InvoiceSubscription{})
+	if err != nil {
+		errc <- err
+		return
+	}
+	for {
+		invoice, err := subscription.Recv()
+		if err != nil {
+			errc <- err
+			return
+		}
+		select {
+		case <- quit:
+			return
+		default:
+		}
+		results <- *invoice
+	}
 }
 
 // Convert the last known lnd witness fee to non-witness fee type
