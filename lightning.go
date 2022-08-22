@@ -9,7 +9,6 @@ import (
 	"github.com/btcsuite/btcd/blockchain"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/lightningnetwork/lnd/lnrpc/invoicesrpc"
-	"github.com/lightningnetwork/lnd/lnrpc/neutrinorpc"
 	"os"
 	"runtime"
 	"time"
@@ -108,18 +107,6 @@ func (ln *LightningClient) GetInvoiceClient() (invoicesrpc.InvoicesClient, func(
 		return nil, nil, err
 	}
 	return invoicesrpc.NewInvoicesClient(conn), closeIt, nil
-}
-
-// GetInvoiceClient : retrieve invoice grpc client
-func (ln *LightningClient) GetNeutrinoClient() (neutrinorpc.NeutrinoKitClient, func(), error) {
-	conn, err := ln.CreateConn()
-	closeIt := func() {
-		conn.Close()
-	}
-	if err != nil {
-		return nil, nil, err
-	}
-	return neutrinorpc.NewNeutrinoKitClient(conn), closeIt, nil
 }
 
 // Unlocker: unlock wallet using wallet unlocker client based on this LightningClient's password
