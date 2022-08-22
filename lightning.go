@@ -9,6 +9,7 @@ import (
 	"github.com/btcsuite/btcd/blockchain"
 	"github.com/btcsuite/btcd/chaincfg"
 	"github.com/lightningnetwork/lnd/lnrpc/invoicesrpc"
+	"github.com/lightningnetwork/lnd/lnrpc/neutrinorpc"
 	"os"
 	"runtime"
 	"time"
@@ -18,7 +19,7 @@ import (
 	"strings"
 
 	"github.com/btcsuite/btcd/wire"
-	"github.com/btcsuite/btcutil"
+	"github.com/btcsuite/btcd/btcutil"
 
 	"github.com/lightningnetwork/lnd/lnrpc/signrpc"
 
@@ -107,6 +108,18 @@ func (ln *LightningClient) GetInvoiceClient() (invoicesrpc.InvoicesClient, func(
 		return nil, nil, err
 	}
 	return invoicesrpc.NewInvoicesClient(conn), closeIt, nil
+}
+
+// GetInvoiceClient : retrieve invoice grpc client
+func (ln *LightningClient) GetNeutrinoClient() (neutrinorpc.NeutrinoKitClient, func(), error) {
+	conn, err := ln.CreateConn()
+	closeIt := func() {
+		conn.Close()
+	}
+	if err != nil {
+		return nil, nil, err
+	}
+	return neutrinorpc.NewNeutrinoKitClient(conn), closeIt, nil
 }
 
 // Unlocker: unlock wallet using wallet unlocker client based on this LightningClient's password
@@ -792,3 +805,4 @@ func (ln *LightningClient) WaitForNewAddress(d time.Duration) (string, error) {
 	}
 	return "", errors.New("Exceeded LND New Address deadline: check that LND has peers")
 }
+
