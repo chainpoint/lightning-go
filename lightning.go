@@ -17,8 +17,8 @@ import (
 	"net"
 	"strings"
 
-	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/wire"
 
 	"github.com/lightningnetwork/lnd/lnrpc/signrpc"
 
@@ -35,20 +35,20 @@ import (
 )
 
 type LightningClient struct {
-	ServerHostPort      string
-	TlsPath             string
-	MacPath             string
-	MinConfs            int64
-	TargetConfs         int64
-	LndLogLevel         string
-	Testnet             bool
-	WalletAddress       string
-	WalletPass          string
-	WalletSeed          []string
-	LastFee             int64
-	HashPrice           int64
-	SessionSecret       string
-	NoMacaroons         bool
+	ServerHostPort string
+	TlsPath        string
+	MacPath        string
+	MinConfs       int64
+	TargetConfs    int64
+	LndLogLevel    string
+	Testnet        bool
+	WalletAddress  string
+	WalletPass     string
+	WalletSeed     []string
+	LastFee        int64
+	HashPrice      int64
+	SessionSecret  string
+	NoMacaroons    bool
 }
 
 var (
@@ -260,34 +260,6 @@ func (ln *LightningClient) GetTransaction(id []byte) (lnrpc.TransactionDetails, 
 		}
 	}
 	return lnrpc.TransactionDetails{}, nil
-}
-
-// GetBlockByHeight : retrieve a bitcoin block of a given height. Only available from tierion/lnd
-func (ln *LightningClient) GetBlockByHeight(height int64) (lnrpc.BlockDetails, error) {
-	client, closeFunc, err := ln.GetClient()
-	if err != nil {
-		return lnrpc.BlockDetails{}, err
-	}
-	defer closeFunc()
-	block, err := client.GetBlock(context.Background(), &lnrpc.GetBlockRequest{BlockHeight: uint32(height)})
-	if err != nil {
-		return lnrpc.BlockDetails{}, err
-	}
-	return *block, nil
-}
-
-// GetBlockByHeight : retrieve a bitcoin block of a given hash. Only available from tierion/lnd
-func (ln *LightningClient) GetBlockByHash(hash string) (lnrpc.BlockDetails, error) {
-	client, closeFunc, err := ln.GetClient()
-	if err != nil {
-		return lnrpc.BlockDetails{}, err
-	}
-	defer closeFunc()
-	block, err := client.GetBlock(context.Background(), &lnrpc.GetBlockRequest{BlockHash: hash})
-	if err != nil {
-		return lnrpc.BlockDetails{}, err
-	}
-	return *block, nil
 }
 
 // PeerExists : determine if the current lnd node is connected to a particular peer.
@@ -528,7 +500,7 @@ func (ln *LightningClient) CreateConn() (*grpc.ClientConn, error) {
 }
 
 // SubscribeInvoicesCallBack : call a callback with a new invoice as a parameter
-func (ln *LightningClient) SubscribeInvoicesCallback(quit chan struct{},  callback func(inv lnrpc.Invoice)) (error) {
+func (ln *LightningClient) SubscribeInvoicesCallback(quit chan struct{}, callback func(inv lnrpc.Invoice)) error {
 	lightning, closeFunc, err := ln.GetClient()
 	defer closeFunc()
 	if err != nil {
@@ -544,7 +516,7 @@ func (ln *LightningClient) SubscribeInvoicesCallback(quit chan struct{},  callba
 			return err
 		}
 		select {
-		case <- quit:
+		case <-quit:
 			return nil
 		default:
 		}
@@ -573,7 +545,7 @@ func (ln *LightningClient) SubscribeInvoicesChannel(quit chan struct{}, errc cha
 			return
 		}
 		select {
-		case <- quit:
+		case <-quit:
 			return
 		default:
 		}
@@ -792,4 +764,3 @@ func (ln *LightningClient) WaitForNewAddress(d time.Duration) (string, error) {
 	}
 	return "", errors.New("Exceeded LND New Address deadline: check that LND has peers")
 }
-

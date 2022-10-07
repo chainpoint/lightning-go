@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/btcsuite/btcd v0.23.1
 	github.com/btcsuite/btcd/btcutil v1.1.2
-	github.com/lightningnetwork/lnd v0.9.2-beta
+	github.com/lightningnetwork/lnd v0.15.0-beta
 	google.golang.org/grpc v1.38.0
 	gopkg.in/macaroon.v2 v2.1.0
 )
@@ -100,7 +100,6 @@ require (
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/soheilhy/cmux v0.1.5 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.7.1 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7 // indirect
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20201229170055-e5319fda7802 // indirect
@@ -142,13 +141,4 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 	sigs.k8s.io/yaml v1.2.0 // indirect
-)
-
-replace (
-	github.com/lightningnetwork/lnd v0.9.2-beta => github.com/tierion/lnd v0.9.0-beta-rc1.0.20220822205137-db0cfb35b28c
-	github.com/lightningnetwork/lnd/lnrpc/invoicesrpc v0.9.2-beta => github.com/tierion/lnd/lnrpc/invoicesrpc v0.9.0-beta-rc1.0.20220822205137-db0cfb35b28c
-	github.com/lightningnetwork/lnd/lnrpc/signrpc v0.9.2-beta => github.com/tierion/lnd/lnrpc/signrpc v0.9.0-beta-rc1.0.20220822205137-db0cfb35b28c
-	github.com/lightningnetwork/lnd/lnrpc/walletrpc v0.9.2-beta => github.com/tierion/lnd/lnrpc/walletrpc v0.9.0-beta-rc1.0.20220822205137-db0cfb35b28c
-	github.com/lightningnetwork/lnd/lntypes v0.9.2-beta => github.com/tierion/lnd/lntypes v0.9.0-beta-rc1.0.20220822205137-db0cfb35b28c
-	github.com/lightningnetwork/lnd/macaroons v0.9.2-beta => github.com/tierion/lnd/macaroons v0.9.0-beta-rc1.0.20220822205137-db0cfb35b28c
 )
