@@ -764,3 +764,19 @@ func (ln *LightningClient) WaitForNewAddress(d time.Duration) (string, error) {
 	}
 	return "", errors.New("Exceeded LND New Address deadline: check that LND has peers")
 }
+
+// WaitForSync : wait until synced
+func (ln *LightningClient) WaitForSync(d time.Duration) error {
+	//Wait for lightning connection
+	deadline := time.Now().Add(d)
+	for !time.Now().After(deadline) {
+		info, err := ln.GetInfo()
+		if err != nil || !info.SyncedToChain {
+			time.Sleep(5 * time.Second)
+			continue
+		} else {
+			return nil
+		}
+	}
+	return errors.New("Exceeded LND New Address deadline: check that LND has peers")
+}
